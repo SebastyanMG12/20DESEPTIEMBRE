@@ -1158,7 +1158,7 @@ h1::before {
   padding: 10px;
   box-sizing: border-box;
   border: 1px solid #a0522d;
-  overflow: hidden; /* El contenedor no muestra scrollbar */
+  overflow-y: auto; /* DESLIZAMIENTO + BARRA VISIBLE */
   background-image: 
     repeating-linear-gradient(
       0deg,
@@ -1167,6 +1167,39 @@ h1::before {
       rgba(139,69,19,0.1) 25px,
       rgba(139,69,19,0.1) 26px
     );
+  
+  /* ESTILO DE BARRA DE DESPLAZAMIENTO ELEGANTE */
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #a0522d rgba(160,82,45,0.1);
+  
+  /* Webkit (Chrome, Safari, Edge) */
+}
+
+.pergamino-contenido::-webkit-scrollbar {
+  width: 8px; /* Ancho visible pero elegante */
+}
+
+.pergamino-contenido::-webkit-scrollbar-track {
+  background: rgba(160,82,45,0.1); /* Track semi-transparente */
+  border-radius: 4px;
+  margin: 2px;
+}
+
+.pergamino-contenido::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #a0522d, #8b4513); /* Degradado marrón */
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+  min-height: 20px;
+}
+
+.pergamino-contenido::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8b4513, #6b3a1e); /* Más oscuro al hover */
+  box-shadow: 0 0 4px rgba(0,0,0,0.3);
+}
+
+.pergamino-contenido::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .pergamino-contenido p {
@@ -1182,30 +1215,7 @@ h1::before {
   /* Ocultar scrollbar en todos los navegadores */
 }
 
-/* Ocultar scrollbar - Webkit (Chrome, Safari, Edge) */
-.pergamino-contenido p::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
 
-.pergamino-contenido p::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.pergamino-contenido p::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-
-/* Ocultar scrollbar - Firefox */
-.pergamino-contenido p {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-/* Ocultar scrollbar - IE y Edge */
-.pergamino-contenido p::-ms-scrollbar {
-  display: none;
-}
 
 /* Estado desplegado */
 .pergamino.desplegado {
@@ -1221,8 +1231,7 @@ h1::before {
 .pergamino.desplegado .pergamino-contenido {
   opacity: 1;
   transform: translateY(0);
-  /* SIN SCROLLBAR */
-  overflow: hidden;
+  /* El scroll funciona automáticamente */
 }
 
 .pergamino.desplegado .pergamino-invitacion {
@@ -1232,7 +1241,8 @@ h1::before {
 
 .pergamino.desplegado .pergamino-contenido {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
+  /* El scroll funciona automáticamente */
 }
 
 .pergamino.desplegado .pergamino-invitacion {
