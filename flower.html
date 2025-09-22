@@ -1671,10 +1671,17 @@ floweBtn.onclick = () => {
     audio.volume = 0.5;
     audio.play().catch(()=>{/* autoplay blocked */});
     isPlaying = true;
+
+   // 🎨 Cambiar a degradado rojo-naranja estilo Instagram
+floweBtn.style.background = "linear-gradient(45deg, #ff0000, #ff7a00)";
+
   } else {
     // Si está reproduciendo, pausar
     audio.pause();
     isPlaying = false;
+
+    // 🎨 Volver al degradado original
+    floweBtn.style.background = "linear-gradient(45deg, #ffbb00, #ff5e00)";
   }
 };
 
