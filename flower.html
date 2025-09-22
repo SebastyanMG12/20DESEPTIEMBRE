@@ -1066,6 +1066,10 @@ h1::before {
   transform: translateY(-50%);
   z-index: 1200;
   cursor: pointer;
+  /* Animación sincronizada con el texto */
+  opacity: 0;
+  transform: translateY(-50%) scale(0.8) translateX(20px);
+  animation: fadeInRight 4s ease-out 1s forwards; /* Misma duración y delay */
 }
 
 .pergamino {
@@ -1271,7 +1275,16 @@ h1::before {
   }
 }
 
-
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.8) translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1) translateX(0);
+  }
+}
 
 
     </style>
