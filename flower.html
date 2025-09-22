@@ -24,6 +24,8 @@
   --speed-leaf: 2s;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
 /* Fondo general (mantengo la estética nocturna) */
 body {
   display: flex;
@@ -46,11 +48,12 @@ h1 {
   color: #cfe7e6;
   font-weight: 300;
   font-size: 30px;
+  font-family: 'Dancing Script', cursive; /* Fuente elegante */
   z-index: 1200;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6);
   max-width: 250px;
   line-height: 1.3;
-  animation: fadeInText 2s ease-out forwards;
+  animation: fadeInText 4s ease-out forwards;
 }
 
 @keyframes fadeInText {
@@ -1054,6 +1057,213 @@ h1::before {
   .flower__leaf { width: 16vmin; height: 4vmin; }
   .flower__white-circle { width: 8vmin; height: 8vmin; left: -3.5vmin; top: -3.5vmin; }
 }
+
+/* Style del pergamino */
+.pergamino-container {
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  transform: translateY(-50%);
+  z-index: 1200;
+  cursor: pointer;
+}
+
+.pergamino {
+  width: 220px;
+  height: 120px;
+  background: linear-gradient(135deg, #d2b48c 0%, #c19a6b 50%, #a87c4e 100%);
+  position: relative;
+  border: 3px solid #8b7355;
+  border-radius: 8px;
+  box-shadow: 
+    0 6px 20px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(255,255,255,0.2),
+    inset 0 -1px 2px rgba(0,0,0,0.3);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: top center;
+  opacity: 1; /* Opacidad completa */
+}
+
+.pergamino::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, #050400 50%, transparent 100%);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.pergamino::after {
+  content: '';
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, #080600 50%, transparent 100%);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.sello {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, #8b0000, #4a0000);
+  border-radius: 50%;
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.4),
+    inset 0 2px 4px rgba(255,0,0,0.2);
+  border: 3px solid #b22222;
+}
+
+/* Texto invitación en el pergamino */
+.pergamino-invitacion {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #0a0301;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(5, 0, 0, 0.8);
+  z-index: 10;
+  opacity: 1; /* Opacidad completa */
+  letter-spacing: 0.5px;
+  background: none; /* Sin fondo */
+}
+
+.pergamino-contenido {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  background: linear-gradient(180deg, #deb887 0%, #cd853f 100%);
+  border-radius: 5px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.4s ease;
+  font-family: 'Georgia', serif;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #a0522d;
+  overflow: hidden; /* El contenedor no muestra scrollbar */
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 25px,
+      rgba(139,69,19,0.1) 25px,
+      rgba(139,69,19,0.1) 26px
+    );
+}
+
+.pergamino-contenido p {
+  margin: 0;
+  color: #000000;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: left;
+  height: 100%;
+  overflow-y: auto; /* Permite desplazamiento vertical */
+  white-space: pre-line;
+  padding-right: 5px; /* Espacio para el desplazamiento */
+  /* Ocultar scrollbar en todos los navegadores */
+}
+
+/* Ocultar scrollbar - Webkit (Chrome, Safari, Edge) */
+.pergamino-contenido p::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.pergamino-contenido p::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pergamino-contenido p::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Ocultar scrollbar - Firefox */
+.pergamino-contenido p {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Ocultar scrollbar - IE y Edge */
+.pergamino-contenido p::-ms-scrollbar {
+  display: none;
+}
+
+/* Estado desplegado */
+.pergamino.desplegado {
+  height: 320px;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 
+    0 10px 30px rgba(0,0,0,0.5),
+    inset 0 1px 3px rgba(255,255,255,0.2),
+    inset 0 -1px 2px rgba(0,0,0,0.3);
+  border-bottom: none;
+}
+
+.pergamino.desplegado .pergamino-contenido {
+  opacity: 1;
+  transform: translateY(0);
+  /* SIN SCROLLBAR */
+  overflow: hidden;
+}
+
+.pergamino.desplegado .pergamino-invitacion {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.8);
+}
+
+.pergamino.desplegado .pergamino-contenido {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.pergamino.desplegado .pergamino-invitacion {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* Efecto de ondulación al hacer click */
+.pergamino:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .pergamino {
+    width: 160px;
+    height: 100px;
+  }
+  
+  .pergamino.desplegado {
+    height: 250px;
+  }
+  
+  .pergamino-contenido p {
+    font-size: 11px;
+  }
+}
+
+
+
+
     </style>
   </head>
   <body class="not-loaded">
@@ -1064,6 +1274,25 @@ h1::before {
     <h1>¡Feliz día amor! Gracias por llegar a mi vida. Te quiero mucho💖👻 Tus girasoles, con mucho cariño</h1>
 
     <!-- NIGHT / SHOOTING STARS (index2 content preserved for flower animation fidelity) -->
+
+   <div class="pergamino-container" onclick="togglePergamino()">
+  <div class="pergamino" id="pergamino">
+    <div class="pergamino-invitacion">Pergamino Da click aquí</div>
+    <div class="pergamino-contenido">
+      <p>Mi amor!! Jajajaj, Estoy muy feliz por haberte conocido. 
+        Gracias, en serio, gracias por estar ovulando jajajaj. 
+        Hoy, en este día donde se celebra el amor y la amistad, donde no somos ni lo uno ni lo otro, pero en el fondo nos queremos mucho desde ese lugar especial, quiero recordarte lo increíble y especial que eres para mí. 
+        Cada instante contigo, se convierte en un recuerdo único. Los días que podemos pasar juntos, los despierto anhelando escuchar tu voz o verte, ahí es donde mi corazón se llena de ilusión. 
+        Eres hermosa por fuera, pero aún más por dentro, tu manera de ser, tu ternura, tu risa, tu picardía… todo en ti me inspira y me hace querer ser mejor persona. 
+        Gracias por quedarte, por cuidar esto que estamos construyendo, esto que tu haces que sea espacial y valioso. 
+        Hoy quise sorprenderte con este pequeño detalle, porque aunque las circunstancias no siempre sean perfectas, quiero que nunca dudes de lo importante que eres para mí ni de lo mucho que te quiero. 
+        Gracias por cada sonrisa que me regalas, por cada momento compartido y por enseñarme lo bonito que puede ser el simple hecho de tenerte en mi vida. 
+
+Con todo mi cariño, Sebastián</p>
+    </div>
+  </div>
+</div>
+
     <div class="night"></div>
 
     <div class="shooting-stars" aria-hidden="true">
@@ -1403,7 +1632,7 @@ h1::before {
     <div class="light light-12"></div>
 
     <!-- botón que reproduce audio (preservo) -->
-    <button class="flower-btn" aria-label="Reproducir música">CLICK AQUI REPRODUCE/PAUSA</button>
+    <button class="flower-btn" aria-label="Reproducir música">Primero da clic acá, luego el pergamino ⏯⏸</button>
 
     <script>
 /* --- Script: botón reproduce/pausa audio --- */
@@ -1454,6 +1683,25 @@ onload = () => {
     clearTimeout(c);
   }, 1000);
 };
+
+function togglePergamino() {
+  const pergamino = document.getElementById('pergamino');
+  pergamino.classList.toggle('desplegado');
+}
+
+// Animación de entrada del pergamino
+setTimeout(() => {
+  const pergaminoContainer = document.querySelector('.pergamino-container');
+  pergaminoContainer.style.opacity = '0';
+  pergaminoContainer.style.transform = 'translateY(-50%) scale(0.8)';
+  
+  setTimeout(() => {
+    pergaminoContainer.style.transition = 'all 0.8s ease-out';
+    pergaminoContainer.style.opacity = '1';
+    pergaminoContainer.style.transform = 'translateY(-50%) scale(1)';
+  }, 100);
+}, 2000);
+
     </script>
   </body>
 </html>
