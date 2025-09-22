@@ -36,18 +36,32 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-/* Mensaje superior (preservo) */
+/* Mensaje a la izquierda de las flores (horizontal, con animación de escribir) */
 h1 {
   position: absolute;
-  top: 18px;
-  left: 0;
-  right: 0;
+  top: 50%;
+  left: 2%;
+  transform: translateY(-50%);
   text-align: center;
   color: #cfe7e6;
   font-weight: 300;
-  font-size: 22px;
+  font-size: 18px;
   z-index: 1200;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  max-width: 250px;
+  line-height: 1.3;
+  animation: fadeInText 2s ease-out forwards;
+}
+
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }
 
 /* Confettis / luces de fondo (preservo comportamiento visual) */
@@ -1027,7 +1041,7 @@ h1 {
   </head>
   <body class="not-loaded">
     <!-- AUDIO (preservo el archivo original) -->
-    <audio id="id_audio" src="Verano rosa.m4a"></audio>
+    <audio id="id_audio" src="Verano rosa.m4a" loop></audio>
 
     <!-- MENSAJE superior (preservo) -->
     <h1>¡Feliz día amor! Gracias por llegar a mi vida Stef. Te quiero mucho❤👻</h1>
@@ -1372,16 +1386,27 @@ h1 {
     <div class="light light-12"></div>
 
     <!-- botón que reproduce audio (preservo) -->
-    <button class="flower-btn" aria-label="Reproducir música">CLICK AQUI</button>
+    <button class="flower-btn" aria-label="Reproducir música">CLICK AQUI REPRODUCE/PAUSA</button>
 
     <script>
-/* --- Script: botón reproduce audio (preservo) --- */
+/* --- Script: botón reproduce/pausa audio --- */
 const floweBtn = document.querySelector(".flower-btn");
 const audio = document.getElementById("id_audio");
+let isPlaying = false;
+
 floweBtn.onclick = () => {
   if (!audio) return;
-  audio.volume = 0.5;
-  audio.play().catch(()=>{/* autoplay blocked */});
+  
+  if (!isPlaying) {
+    // Si no está reproduciendo, reproducir
+    audio.volume = 0.5;
+    audio.play().catch(()=>{/* autoplay blocked */});
+    isPlaying = true;
+  } else {
+    // Si está reproduciendo, pausar
+    audio.pause();
+    isPlaying = false;
+  }
 };
 
 /* --- Script: replica el comportamiento de creación de shooting stars desde index2 --- */

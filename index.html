@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <title>STEFANNY:</title>
+    <title>MAZORCADA</title>
     
     <style>
       * {
@@ -22,7 +22,7 @@
         height: 100vh;
         justify-content: center;
         align-items: center;
-        background-color: #fce4ec;
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ffffff 100%);
       }
 
       .container {
@@ -31,6 +31,7 @@
         padding: 20px;
         background-color: #fff;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        border-radius: 20px;
       }
 
       .container h2 {
@@ -44,6 +45,13 @@
         margin: 10px 0;
       }
 
+      .error-message {
+        color: #f44336;
+        font-size: 14px;
+        margin: 10px 0;
+        display: none;
+      }
+
       .keypad {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -54,10 +62,11 @@
         padding: 15px;
         font-size: 25px;
         background-color: #f37da6;
-        border: 1px black solid;
+        border: none;
         outline: none;
         cursor: pointer;
         transition: background 0.2s;
+        border-radius: 12px;
       }
 
       .key:hover {
@@ -68,6 +77,30 @@
         grid-column: 2/3;
       }
 
+      .delete-btn {
+        background-color: #ed4956;
+        color: white;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        margin-top: 15px;
+        transition: background 0.2s;
+        width: 100%;
+        box-shadow: 0 2px 4px rgba(237, 73, 86, 0.3);
+      }
+
+      .delete-btn:hover {
+        background-color: #e43a4d;
+      }
+
+      .delete-btn:active {
+        transform: scale(0.98);
+      }
+
     </style>
   </head>
   <body>
@@ -76,7 +109,8 @@
         🔒<br />
         Ingrese la contraseña
       </h2>
-      <div class="input-display" id="inputDisplay">••••••</div>
+      <div class="input-display" id="inputDisplay"></div>
+      <div class="error-message" id="errorMessage">Es incorrecta amor</div>
       <div class="keypad">
         <button class="key" onclick="enterDigit('1')">1</button>
         <button class="key" onclick="enterDigit('2')">2</button>
@@ -85,31 +119,65 @@
         <button class="key" onclick="enterDigit('5')">5</button>
         <button class="key" onclick="enterDigit('6')">6</button>
         <button class="key" onclick="enterDigit('7')">7</button>
-        <button class="key" onclick="enterDigit('9')">9</button>
         <button class="key" onclick="enterDigit('8')">8</button>
+        <button class="key" onclick="enterDigit('9')">9</button>
         <button class="key" onclick="enterDigit('0')">0</button>
       </div>
+      <button class="delete-btn" onclick="deleteDigit()">⌫ Eliminar</button>
     </div>
 
     <script>
       const correctPassword = "150825";
       const display = document.getElementById("inputDisplay");
+      const errorMessage = document.getElementById("errorMessage");
       let input = "";
+      let displayState = "";
+      let failedAttempts = 0;
+      
       function enterDigit(digit) {
         if (input.length < 6) {
           input += digit;
+          // Mostrar solo el nuevo dígito por 300ms
+          const tempDisplay = "•".repeat(input.length - 1) + digit;
+          display.textContent = tempDisplay;
+          
+          setTimeout(() => {
+            // Ocultar el dígito con punto
+            displayState = "•".repeat(input.length);
+            display.textContent = displayState;
+          }, 300);
+          
+          errorMessage.style.display = "none";
         }
-        display.textContent = input.padEnd(6, "•");
         if (input.length === 6) {
           if (input === correctPassword) {
             window.location.href = "flower.html"; 
           } else {
-            alert("Contraseña incorecta, intenta de nuevo");
+            failedAttempts++;
+            if (failedAttempts >= 3) {
+              errorMessage.textContent = "Pista: Es el día en que nos conocimos, con el formato dd/mes/25";
+            } else {
+              errorMessage.textContent = "Es incorrecta amor";
+            }
+            errorMessage.style.display = "block";
             input = "";
-            display.textContent = "••••••";
+            displayState = "";
+            display.textContent = "";
           }
         }
       }
+      
+      function deleteDigit() {
+        if (input.length > 0) {
+          input = input.slice(0, -1);
+          displayState = "•".repeat(input.length);
+          display.textContent = displayState;
+          errorMessage.style.display = "none";
+        }
+      }
+      
+      // Inicializar display vacío
+      display.textContent = "";
     </script>
   </body>
 </html>
