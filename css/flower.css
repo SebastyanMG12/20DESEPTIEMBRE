@@ -1206,11 +1206,15 @@ h1::before {
 .lily--left-1 { --size: 19vmin; }
 .lily--right-1 { --size: 18vmin; }
 .lily--left-2, .lily--right-2 { --size: 15vmin; }
+.lily--left-3, .lily--right-3 { --size: 17vmin; }
+.lily--left-4, .lily--right-4 { --size: 12vmin; }
 
 /* En pantallas pequeñas los girasoles ya se hacen más chicos (ver abajo); los lirios también */
 @media (max-width: 480px) {
   .lily--left-1, .lily--right-1 { --size: 15vmin; }
   .lily--left-2, .lily--right-2 { --size: 12vmin; }
+  .lily--left-3, .lily--right-3 { --size: 13vmin; }
+  .lily--left-4, .lily--right-4 { --size: 10vmin; }
 }
 
 /* small responsive tweak */
