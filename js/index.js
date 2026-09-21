@@ -1,5 +1,5 @@
 
-      const correctPassword = "150825";
+      const correctPassword = "050626";
       const display = document.getElementById("inputDisplay");
       const errorMessage = document.getElementById("errorMessage");
       let input = "";
@@ -27,7 +27,7 @@
           } else {
             failedAttempts++;
             if (failedAttempts >= 3) {
-              errorMessage.textContent = "Pista: Es el día en que nos conocimos, con el formato dd/mes/25";
+              errorMessage.textContent = "Pista: Es el día en que nos conocimos, con el formato dd/mes/26";
             } else {
               errorMessage.textContent = "Es incorrecta amor";
             }
