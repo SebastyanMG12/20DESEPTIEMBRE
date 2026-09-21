@@ -16,9 +16,13 @@
   --dark-color: #001418; /* ajustado para mejor fusión con fondo original */
   --fl-speed: 0.8s;
   --speed-leaf: 2s;
+  /* Escala del ramo y alcance horizontal (ramo + lirios). Se reajustan según la forma de la pantalla. */
+  --s: 0.9;
+  --reach: calc(50.2 * var(--s) * 1vmin);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+/* La fuente Dancing Script ahora se carga desde flower.html (<link>).
+   Aquí había un @import fuera de lugar (debe ser lo primero del archivo), por lo que el navegador lo ignoraba. */
 
 /* Fondo general (mantengo la estética nocturna) */
 body {
@@ -26,6 +30,7 @@ body {
   align-items: flex-end;
   justify-content: center;
   min-height: 100vh;
+  min-height: 100dvh; /* en móviles 100vh incluye la barra del navegador y dejaba la base de las flores cortada */
   background-color: var(--dark-color);
   overflow: hidden;
   perspective: 1000px;
@@ -41,11 +46,12 @@ h1 {
   text-align: center;
   color: #cfe7e6;
   font-weight: 300;
-  font-size: 30px;
+  font-size: clamp(15px, 3.4vmin, 30px); /* 30px en pantallas grandes, más pequeño si el espacio es poco */
   font-family: 'Dancing Script', cursive; /* Fuente elegante */
   z-index: 1200;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  max-width: 250px;
+  /* máximo 250px, pero nunca invade el espacio de los lirios */
+  max-width: clamp(120px, calc(47vw - var(--reach) - 12px), 250px);
   line-height: 1.3;
   animation: fadeInText 4s ease-out forwards;
 }
@@ -118,6 +124,12 @@ h1::before {
 .light-24 { left: calc(100% - 700px); animation-delay: 3.6s; }
 
 
+/* En celulares estas luces quedan fuera de la pantalla: se ocultan para no animarlas en vano */
+@media (max-width: 420px) {
+  .light-3, .light-4, .light-7, .light-8, .light-9, .light-10, .light-11, .light-12,
+  .light-20, .light-21, .light-22, .light-23, .light-24 { display: none; }
+}
+
 @keyframes light-ans-background {
   0% { opacity: 0; transform: translateY(0) translateX(0); }
   25% { opacity: 1; transform: translateY(-100px) translateX(10px); }
@@ -129,8 +141,6 @@ h1::before {
 /* Botón (preservo estilo y comportamiento del original flower.html) */
 .flower-btn {
   pointer-events: auto;
-  padding: 14px 32px;
-  font-size: 18px;
   font-weight: 600;
   color: #fff;
   background: linear-gradient(45deg, #ffbb00, #ff5e00);
@@ -142,6 +152,19 @@ h1::before {
   z-index: 1200;
   position: absolute;
   bottom: 28px;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  /* centrado y sin desbordar la pantalla en celulares */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  text-align: center;
+  line-height: 1.25;
+  font-size: clamp(13px, 3.6vw, 18px);
+  padding: clamp(10px, 2.4vw, 14px) clamp(16px, 5vw, 32px);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .flower-btn:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(0,0,0,0.45); }
 
@@ -219,9 +242,10 @@ h1::before {
   position: absolute;
   top: 50%;
   right: 0;
-  transform: translateY(-50%);
-  width: 0;
+  width: 100px;
   height: 2px;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: right center;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
   animation: shootingStarTail 3s linear infinite;
 }
@@ -299,22 +323,24 @@ h1::before {
   }
 }
 
+/* Antes animaba width (0 -> 100px -> 0), lo que obligaba a recalcular el layout en cada cuadro.
+   Con scaleX se ve exactamente igual pero corre en la GPU. */
 @keyframes shootingStarTail {
   0% {
-    width: 0;
+    transform: translateY(-50%) scaleX(0);
   }
   30% {
-    width: 100px;
+    transform: translateY(-50%) scaleX(1);
   }
   100% {
-    width: 0;
+    transform: translateY(-50%) scaleX(0);
   }
 }
 
 /* Flowers block (copied exactly from index2) */
 .flowers {
   position: relative;
-  transform: scale(0.9);
+  transform: scale(var(--s));
   z-index: 2;
 }
 
@@ -484,16 +510,25 @@ h1::before {
   animation-delay: 2.0s;
 }
 
+/* Resplandor cian detrás de cada girasol.
+   Antes: un cuadro de 8vmin con filter: blur(10vmin) (x5 flores, recalculado en cada cuadro: lo más pesado de la página).
+   Ahora: un degradado radial con la misma intensidad (~10 %) y el mismo alcance, sin filtro. */
 .flower__leafs::after {
   content: "";
   position: absolute;
   left: 0;
-  top: 0;
-  transform: translate(-50%, -100%);
-  width: 8vmin;
-  height: 8vmin;
-  background-color: #6bf0ff;
-  filter: blur(10vmin);
+  top: -4vmin;
+  transform: translate(-50%, -50%);
+  width: 50vmin;
+  height: 50vmin;
+  pointer-events: none;
+  background: radial-gradient(closest-side,
+    rgba(107, 240, 255, 0.096) 0%,
+    rgba(107, 240, 255, 0.085) 20%,
+    rgba(107, 240, 255, 0.058) 40%,
+    rgba(107, 240, 255, 0.031) 60%,
+    rgba(107, 240, 255, 0.013) 80%,
+    rgba(107, 240, 255, 0) 100%);
 }
 
 .flower__leaf {
@@ -1059,6 +1094,125 @@ h1::before {
   50% { transform: scale(0.35) rotate(-42deg) rotateY(-115deg); }
 }
 
+/* ------------------------
+   LIRIOS ROSADOS PASTEL
+   Salen del mismo punto que los girasoles (misma base, bottom: 10vmin), crecen y se abren igual,
+   y quedan a ambos extremos del ramo: dos a la izquierda y dos a la derecha.
+   Reutilizan las animaciones de los girasoles (grow-flower-tree, blooming-flower).
+   ------------------------ */
+.lily-defs {
+  position: absolute; /* gradientes compartidos por todos los lirios (no ocupa espacio) */
+  pointer-events: none;
+}
+
+.lily {
+  --r: 0deg;        /* inclinación base del tallo */
+  --sway: 3deg;     /* cuánto se mece */
+  --len: 60vmin;    /* largo del tallo */
+  --size: 19vmin;   /* diámetro de la flor */
+  --leaf: 14vmin;   /* largo de las hojas del tallo */
+  --grow: 1.9s;     /* cuándo empieza a crecer el tallo */
+  --open: 2.6s;     /* cuándo empieza a abrirse la flor */
+  --sway-delay: 0s;
+  position: absolute;
+  bottom: 10vmin;
+  transform-origin: bottom center;
+  transform: rotate(var(--r));
+  z-index: 40; /* detrás de los girasoles (50), delante del pasto */
+  animation: lily-sway 5s ease-in-out var(--sway-delay) infinite;
+}
+
+.lily__bloom {
+  position: relative;
+  left: 50%;
+  width: 0;
+  height: 0;
+  animation: blooming-flower 2.2s var(--open) backwards;
+}
+
+.lily__bloom svg {
+  position: absolute;
+  left: calc(var(--size) / -2);
+  top: calc(var(--size) / -2);
+  width: var(--size);
+  height: var(--size);
+  overflow: visible;
+}
+
+.lily__tepal {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: lily-tepal-open 1.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--open) + 0.15s + var(--i, 0) * 0.14s);
+}
+
+.lily__stem {
+  position: relative;
+  width: 1.5vmin;
+  height: var(--len);
+  background-image: linear-gradient(
+      to left,
+      rgb(0, 0, 0, 0.3),
+      transparent,
+      rgba(255, 255, 255, 0.2)
+    ),
+    linear-gradient(to top, transparent 10%, #2f5d23, #4f8a34, #79a84a);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.6);
+  animation: grow-flower-tree 4s var(--grow) backwards;
+}
+
+.lily__leaf {
+  position: absolute;
+  width: calc(var(--leaf) * 0.24);
+  height: var(--leaf);
+  background-image: linear-gradient(to top, rgba(47, 93, 35, 0.7), #4f8a34 45%, #8bbd5b);
+  box-shadow: inset 0 0 1vmin rgba(0, 0, 0, 0.25);
+}
+
+.lily__leaf--r {
+  left: 100%;
+  border-radius: 100% 0 100% 0;
+  transform-origin: 0 100%;
+  transform: rotate(24deg);
+  animation: lily-leaf-right var(--fl-speed) backwards;
+}
+
+.lily__leaf--l {
+  right: 100%;
+  border-radius: 0 100% 0 100%;
+  transform-origin: 100% 100%;
+  transform: rotate(-24deg);
+  animation: lily-leaf-left var(--fl-speed) backwards;
+}
+
+@keyframes lily-sway {
+  0%, 100% { transform: rotate(var(--r)); }
+  50% { transform: rotate(calc(var(--r) + var(--sway))); }
+}
+
+@keyframes lily-tepal-open {
+  0% { transform: scale(0.05); opacity: 0; }
+  35% { opacity: 1; }
+}
+
+@keyframes lily-leaf-right {
+  0% { transform: rotate(60deg) scale(0); }
+}
+
+@keyframes lily-leaf-left {
+  0% { transform: rotate(-60deg) scale(0); }
+}
+
+.lily--left-1 { --size: 19vmin; }
+.lily--right-1 { --size: 18vmin; }
+.lily--left-2, .lily--right-2 { --size: 15vmin; }
+
+/* En pantallas pequeñas los girasoles ya se hacen más chicos (ver abajo); los lirios también */
+@media (max-width: 480px) {
+  .lily--left-1, .lily--right-1 { --size: 15vmin; }
+  .lily--left-2, .lily--right-2 { --size: 12vmin; }
+}
+
 /* small responsive tweak */
 @media (max-width: 480px) {
   .flower__line { height: 45vmin; }
@@ -1074,6 +1228,7 @@ h1::before {
   transform: translateY(-50%);
   z-index: 1200;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   /* Animación sincronizada con el texto */
   opacity: 0;
   transform: translateY(-50%) scale(0.8) translateX(20px);
@@ -1081,7 +1236,8 @@ h1::before {
 }
 
 .pergamino {
-  width: 220px;
+  /* 220px como siempre; se reduce solo si el espacio lateral (junto a los lirios) es menor */
+  width: clamp(150px, calc(48vw - var(--reach) - 12px), 220px);
   height: 120px;
   background: linear-gradient(135deg, #d2b48c 0%, #c19a6b 50%, #a87c4e 100%);
   position: relative;
@@ -1231,7 +1387,7 @@ h1::before {
 
 /* Estado desplegado */
 .pergamino.desplegado {
-  height: 320px;
+  height: min(320px, 82vh); /* no se sale de pantallas bajas (celular horizontal) */
   border-radius: 20px 20px 15px 15px;
   box-shadow: 
     0 10px 30px rgba(0,0,0,0.5),
@@ -1267,22 +1423,6 @@ h1::before {
   transform: scale(0.98);
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .pergamino {
-    width: 160px;
-    height: 100px;
-  }
-  
-  .pergamino.desplegado {
-    height: 250px;
-  }
-  
-  .pergamino-contenido p {
-    font-size: 11px;
-  }
-}
-
 @keyframes fadeInRight {
   from {
     opacity: 0;
@@ -1295,4 +1435,68 @@ h1::before {
 }
 
 
-    
+/* ------------------------
+   RESPONSIVE
+   El ramo ya escala con vmin; aquí se decide dónde van el mensaje y el pergamino según la forma de la pantalla.
+   - Horizontal (>= 1.55): ramo a escala 0.9, mensaje a la izquierda y pergamino a la derecha (como siempre).
+   - Casi cuadrada (4:3, tablets, ventanas angostas): ramo un poco más pequeño para dejar espacio a los lados.
+   - Vertical (celulares): mensaje arriba, pergamino debajo y ramo abajo.
+   ------------------------ */
+@media (max-aspect-ratio: 155/100) {
+  :root { --s: 0.72; }
+}
+
+@media (max-aspect-ratio: 115/100) {
+  :root {
+    --s: 0.66;
+    --h1-font: clamp(19px, 4.8vmin, 32px);
+  }
+
+  h1 {
+    top: max(2vh, 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 560px);
+    max-width: none;
+    font-size: var(--h1-font);
+    animation-name: fadeInTextTop;
+  }
+
+  .pergamino-container {
+    top: calc(max(2vh, 14px) + var(--h1-font) * 4.3 + 12px);
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8) translateY(-10px);
+    animation-name: fadeInPergaminoTop;
+  }
+
+  .pergamino {
+    width: min(220px, 62vw);
+  }
+}
+
+@media (max-aspect-ratio: 62/100) {
+  :root { --s: 0.9; }
+}
+
+@keyframes fadeInTextTop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeInPergaminoTop {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.8) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1) translateY(0);
+  }
+}
