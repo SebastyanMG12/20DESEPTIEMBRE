@@ -27,7 +27,7 @@
           } else {
             failedAttempts++;
             if (failedAttempts >= 3) {
-              errorMessage.textContent = "Pista: Es el día en que nos conocimos, con el formato dd/mes/26";
+              errorMessage.textContent = "Pista: Es el día en que nos conocimos, con el formato dd/mm/26";
             } else {
               errorMessage.textContent = "Es incorrecta amor";
             }
